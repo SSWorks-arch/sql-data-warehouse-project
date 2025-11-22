@@ -40,4 +40,49 @@ GO
 
 CREATE SCHEMA gold;
 GO
+
+
+/* 
+=============================================================
+SAFE VERSION — Create Database and Schemas
+=============================================================
+Script Purpose:
+    This script creates a database named 'DataWarehouse' ONLY if it does not already exist.
+    It will NOT drop or overwrite an existing database.
+    After creation, it sets up the 'bronze', 'silver', and 'gold' schemas.
+
+Safety:
+    If the 'DataWarehouse' database already exists, the script prints a message
+    and exits without making changes.
+*/
+
+USE master;
+GO
+
+-- Check if the database already exists
+IF EXISTS (SELECT 1 FROM sys.databases WHERE name = 'DataWarehouse')
+BEGIN
+    PRINT 'Database ''DataWarehouse'' already exists. No action taken.';
+    RETURN;   -- Stop the script safely
+END;
+GO
+
+-- Create the 'DataWarehouse' database
+CREATE DATABASE DataWarehouse;
+GO
+
+USE DataWarehouse;
+GO
+
+-- Create schemas only in the newly created database
+CREATE SCHEMA bronze;
+GO
+
+CREATE SCHEMA silver;
+GO
+
+CREATE SCHEMA gold;
+GO
+
+PRINT 'DataWarehouse created successfully with bronze, silver, and gold schemas.';
     
