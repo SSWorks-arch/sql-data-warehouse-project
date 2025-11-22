@@ -21,7 +21,7 @@ Notes:
     - If a load fails, the error message, number, state, and table name are printed.
 ===============================================================================
 */
-REATE OR ALTER PROCEDURE bronze.load_bronze AS
+CREATE OR ALTER PROCEDURE bronze.load_bronze AS
 BEGIN
     -- Declare variables to track load times and current table
     DECLARE 
