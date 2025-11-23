@@ -6,6 +6,15 @@ Script Purpose:
     This script creates tables in the 'bronze' schema, dropping existing tables 
     if they already exist.
 	  Run this script to re-define the DDL structure of 'bronze' Tables
+Scope:
+    CRM Tables:
+        - crm_cust_info
+        - crm_prd_info
+        - crm_sales_details
+    ERP Tables:
+        - erp_loc_a101
+        - erp_cust_az12
+        - erp_px_cat_g1v2
 ===============================================================================
 */
 
