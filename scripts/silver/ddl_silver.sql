@@ -9,17 +9,6 @@ Script Purpose:
     exact date and time when a record is loaded into the Silver layer of the 
     Data Warehouse (DWH).
 		Run this script to re-define the DDL structure of 'bronze' Tables
-
-Scope:
-    CRM Tables:
-        - crm_cust_info
-        - crm_prd_info
-        - crm_sales_details
-
-    ERP Tables:
-        - erp_loc_a101
-        - erp_cust_az12
-        - erp_px_cat_g1v2
 ===============================================================================
 
 */
