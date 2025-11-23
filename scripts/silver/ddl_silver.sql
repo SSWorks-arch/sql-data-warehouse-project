@@ -5,87 +5,134 @@ DDL Script: Create Silver Tables
 Script Purpose:
     This script creates tables in the 'silver' schema, dropping existing tables 
     if they already exist.
-	  Run this script to re-define the DDL structure of 'bronze' Tables
+    All tables include a timestamp column `dwh_create_date` which records the 
+    exact date and time when a record is loaded into the Silver layer of the 
+    Data Warehouse (DWH).
+		Run this script to re-define the DDL structure of 'bronze' Tables
+
+Scope:
+    CRM Tables:
+        - crm_cust_info
+        - crm_prd_info
+        - crm_sales_details
+
+    ERP Tables:
+        - erp_loc_a101
+        - erp_cust_az12
+        - erp_px_cat_g1v2
 ===============================================================================
+
 */
 
--- Drop and recreate table silver.crm_cust_info if it exists
+-- =========================================
+-- CRM Tables
+-- =========================================
+
+-- -----------------------------------------
+-- crm_cust_info table
+-- -----------------------------------------
 IF OBJECT_ID('silver.crm_cust_info', 'U') IS NOT NULL
-    DROP TABLE silver.crm_cust_info;  -- Drop the table if it already exists to avoid errors
+    DROP TABLE silver.crm_cust_info;
+GO
 
 CREATE TABLE silver.crm_cust_info (
-    cst_id INT,                  -- Customer ID (primary identifier from source)
-    cst_key NVARCHAR(50),        -- Customer Key (business key or external ID)
-    cst_firstname NVARCHAR(50),  -- Customer First Name
-    cst_lastname NVARCHAR(50),   -- Customer Last Name
-    cst_material_status NVARCHAR(50), -- Marital Status of customer
-    cst_gndr NVARCHAR(50),       -- Gender of customer
-    cst_create_date DATE,        -- Original creation date from source system
-    dwh_create_date DATETIME2 DEFAULT GETDATE() -- Timestamp when the record is inserted into DWH (captures load time)
+    cst_id INT,
+    cst_key NVARCHAR(50),
+    cst_firstname NVARCHAR(50),
+    cst_lastname NVARCHAR(50),
+    cst_marital_status NVARCHAR(50),
+    cst_gndr NVARCHAR(50),
+    cst_create_date DATE,
+    dwh_create_date DATETIME2 Default getdate() -- Automatically records the date & time when the row is inserted into Silver
 );
+GO
 
--- Drop and recreate table silver.crm_prd_info if it exists
+-- -----------------------------------------
+-- crm_prd_info table
+-- -----------------------------------------
 IF OBJECT_ID('silver.crm_prd_info', 'U') IS NOT NULL
-    DROP TABLE silver.crm_prd_info;  -- Drop existing table if exists
+    DROP TABLE silver.crm_prd_info;
+GO
 
 CREATE TABLE silver.crm_prd_info (
-    prd_id INT,                  -- Product ID from source
-    prd_key NVARCHAR(50),        -- Product Key (business key)
-    prd_nm NVARCHAR(50),         -- Product Name
-    prd_cost INT,                -- Product Cost
-    prd_line NVARCHAR(50),       -- Product Line / category
-    prd_start_dt DATETIME,       -- Product Start Date in source
-    prd_end_dt DATETIME,         -- Product End Date in source
-    dwh_create_date DATETIME2 DEFAULT GETDATE() -- Timestamp when record inserted into DWH
+    prd_id INT,
+    prd_key NVARCHAR(50),
+    prd_nm NVARCHAR(50),
+    prd_cost INT,
+    prd_line NVARCHAR(50),
+    prd_start_dt DATETIME,
+    prd_end_dt DATETIME,
+    dwh_create_date DATETIME2 Default getdate() -- Automatically records the date & time when the row is inserted into Silver
 );
+GO
 
--- Drop and recreate table silver.crm_sales_details if it exists
+-- -----------------------------------------
+-- crm_sales_details table
+-- -----------------------------------------
 IF OBJECT_ID('silver.crm_sales_details', 'U') IS NOT NULL
-    DROP TABLE silver.crm_sales_details;  -- Drop existing table if exists
+    DROP TABLE silver.crm_sales_details;
+GO
 
 CREATE TABLE silver.crm_sales_details (
-    sls_ord_num NVARCHAR(50),    -- Sales Order Number
-    sls_prd_key NVARCHAR(50),   -- Product Key
-    sls_cust_id INT,             -- Customer ID
-    sls_order_dt INT,            -- Order Date (in YYYYMMDD format)
-    sls_ship_dt INT,             -- Ship Date
-    sls_due_dt INT,              -- Due Date
-    sls_sales INT,               -- Sales Amount
-    sls_quantity INT,            -- Quantity Sold
-    sls_price INT,               -- Unit Price
-    dwh_create_date DATETIME2 DEFAULT GETDATE() -- DWH load timestamp
+    sls_ord_num NVARCHAR(50),
+    sls_prd_key NVARCHAR(50),
+    sls_cust_id INT,
+    sls_order_dt INT,
+    sls_ship_dt INT,
+    sls_due_dt INT,
+    sls_sales INT,
+    sls_quantity INT,
+    sls_price INT,
+    dwh_create_date DATETIME2 Default getdate() -- Automatically records the date & time when the row is inserted into Silver
 );
+GO
 
--- Drop and recreate table silver.erp_cust_az12 if it exists
-IF OBJECT_ID('silver.erp_cust_az12', 'U') IS NOT NULL
-    DROP TABLE silver.erp_cust_az12;  -- Drop existing table if exists
+-- =========================================
+-- ERP Tables
+-- =========================================
 
-CREATE TABLE silver.erp_cust_az12 (
-    cid NVARCHAR(50),            -- Customer ID from ERP system
-    bdate DATE,                  -- Birth Date
-    gen NVARCHAR(50),            -- Gender
-    dwh_create_date DATETIME2 DEFAULT GETDATE() -- Timestamp when record loaded into DWH
-);
-
--- Drop and recreate table silver.erp_loc_a101 if it exists
+-- -----------------------------------------
+-- erp_loc_a101 table
+-- -----------------------------------------
 IF OBJECT_ID('silver.erp_loc_a101', 'U') IS NOT NULL
-    DROP TABLE silver.erp_loc_a101;  -- Drop existing table if exists
+    DROP TABLE silver.erp_loc_a101;
+GO
 
 CREATE TABLE silver.erp_loc_a101 (
-    cid NVARCHAR(50),            -- Customer ID from ERP
-    cntry NVARCHAR(50),          -- Customer Country
-    dwh_create_date DATETIME2 DEFAULT GETDATE() -- Timestamp when record loaded into DWH
+    cid NVARCHAR(50),
+    cntry NVARCHAR(50),
+    dwh_create_date DATETIME2 Default getdate() -- Automatically records the date & time when the row is inserted into Silver
 );
+GO
 
--- Drop and recreate table silver.erp_px_cat_g1v2 if it exists
+-- -----------------------------------------
+-- erp_cust_az12 table
+-- -----------------------------------------
+IF OBJECT_ID('silver.erp_cust_az12', 'U') IS NOT NULL
+    DROP TABLE silver.erp_cust_az12;
+GO
+
+CREATE TABLE silver.erp_cust_az12 (
+    cid NVARCHAR(50),
+    bdate DATE,
+    gen NVARCHAR(50),
+    dwh_create_date DATETIME2 Default getdate() -- Automatically records the date & time when the row is inserted into Silver
+);
+GO
+
+-- -----------------------------------------
+-- erp_px_cat_g1v2 table
+-- -----------------------------------------
 IF OBJECT_ID('silver.erp_px_cat_g1v2', 'U') IS NOT NULL
-    DROP TABLE silver.erp_px_cat_g1v2;  -- Drop existing table if exists
+    DROP TABLE silver.erp_px_cat_g1v2;
+GO
 
 CREATE TABLE silver.erp_px_cat_g1v2 (
-    id NVARCHAR(50),             -- Product or Item ID
-    cat NVARCHAR(50),            -- Category
-    subcat NVARCHAR(50),         -- Subcategory
-    maintenance NVARCHAR(50),    -- Maintenance info
-    dwh_create_date DATETIME2 DEFAULT GETDATE() -- Timestamp when record loaded into DWH
+    id NVARCHAR(50),
+    cat NVARCHAR(50),
+    subcat NVARCHAR(50),
+    maintenance NVARCHAR(50),
+    dwh_create_date DATETIME2 Default getdate() -- Automatically records the date & time when the row is inserted into Silver
 );
+GO
 
