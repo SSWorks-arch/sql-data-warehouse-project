@@ -28,127 +28,133 @@ CREATE OR ALTER PROCEDURE bronze.load_bronze AS
 BEGIN
     -- Declare variables to track start/end time for each table and the whole batch
     DECLARE 
-        @start_time DATETIME,      -- Start time for current table
-        @end_time DATETIME,        -- End time for current table
-        @batch_start_time DATETIME,-- Start time for entire batch
-        @batch_end_time DATETIME;  -- End time for entire batch
+        @start_time DATETIME,       -- Start time for current table
+        @end_time DATETIME,         -- End time for current table
+        @batch_start_time DATETIME, -- Start time for entire batch
+        @batch_end_time DATETIME;   -- End time for entire batch
 
     BEGIN TRY
         -- Start batch timer
         SET @batch_start_time = GETDATE(); 
 
-        -- Header log
+        -- Header log for batch start
         PRINT '================================================';
         PRINT 'Loading Bronze Layer';
         PRINT '================================================';
 
-        -- CRM tables section
+        -- ======================================================
+        -- CRM Tables Section
+        -- ======================================================
         PRINT '------------------------------------------------';
         PRINT 'Loading CRM Tables';
         PRINT '------------------------------------------------';
 
-        -- crm_cust_info table load
-        SET @start_time = GETDATE(); -- Start timer for this table
+        -- Load crm_cust_info table
+        SET @start_time = GETDATE();                       -- Start timer for this table
         PRINT '>> Truncating Table: bronze.crm_cust_info';
-        TRUNCATE TABLE bronze.crm_cust_info; -- Remove existing data
+        TRUNCATE TABLE bronze.crm_cust_info;              -- Remove existing data
         PRINT '>> Inserting Data Into: bronze.crm_cust_info';
-        BULK INSERT bronze.crm_cust_info
-        FROM 'C:\Users\Svyatoslav\Desktop\datasets\source_crm\cust_info.csv' -- CSV source
+        BULK INSERT bronze.crm_cust_info                  -- Bulk load from CSV
+        FROM 'C:\Users\Svyatoslav\Desktop\sql-data-warehouse-project\datasets\source_crm\cust_info.csv'
         WITH (
             FIRSTROW = 2,            -- Skip header row
             FIELDTERMINATOR = ',',   -- Columns separated by comma
-            TABLOCK                  -- Lock the table for bulk insert
+            TABLOCK                  -- Lock table during insert for performance
         );
-        SET @end_time = GETDATE(); -- End timer
+        SET @end_time = GETDATE();                        -- End timer
         PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
         PRINT '>> -------------';
 
-        -- crm_prd_info table load
+        -- Load crm_prd_info table
         SET @start_time = GETDATE();
         PRINT '>> Truncating Table: bronze.crm_prd_info';
-        TRUNCATE TABLE bronze.crm_prd_info;
+        TRUNCATE TABLE bronze.crm_prd_info;              -- Remove existing data
         PRINT '>> Inserting Data Into: bronze.crm_prd_info';
         BULK INSERT bronze.crm_prd_info
-        FROM 'C:\Users\Svyatoslav\Desktop\datasets\source_crm\prd_info.csv'
+        FROM 'C:\Users\Svyatoslav\Desktop\sql-data-warehouse-project\datasets\source_crm\prd_info.csv'
         WITH (
-            FIRSTROW = 2,            
-            FIELDTERMINATOR = ',',   
-            TABLOCK                  
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
         );
         SET @end_time = GETDATE();
         PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
         PRINT '>> -------------';
 
-        -- crm_sales_details table load
+        -- Load crm_sales_details table
         SET @start_time = GETDATE();
         PRINT '>> Truncating Table: bronze.crm_sales_details';
-        TRUNCATE TABLE bronze.crm_sales_details;
+        TRUNCATE TABLE bronze.crm_sales_details;         -- Remove existing data
         PRINT '>> Inserting Data Into: bronze.crm_sales_details';
         BULK INSERT bronze.crm_sales_details
-        FROM 'C:\Users\Svyatoslav\Desktop\datasets\source_crm\sales_details.csv'
+        FROM 'C:\Users\Svyatoslav\Desktop\sql-data-warehouse-project\datasets\source_crm\sales_details.csv'
         WITH (
-            FIRSTROW = 2,            
-            FIELDTERMINATOR = ',',   
-            TABLOCK                  
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
         );
         SET @end_time = GETDATE();
         PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
         PRINT '>> -------------';
 
-        -- ERP tables section
+        -- ======================================================
+        -- ERP Tables Section
+        -- ======================================================
         PRINT '------------------------------------------------';
         PRINT 'Loading ERP Tables';
         PRINT '------------------------------------------------';
 
-        -- erp_loc_a101 table load
+        -- Load erp_loc_a101 table
         SET @start_time = GETDATE();
         PRINT '>> Truncating Table: bronze.erp_loc_a101';
-        TRUNCATE TABLE bronze.erp_loc_a101;
+        TRUNCATE TABLE bronze.erp_loc_a101;              -- Remove existing data
         PRINT '>> Inserting Data Into: bronze.erp_loc_a101';
         BULK INSERT bronze.erp_loc_a101
-        FROM 'C:\Users\Svyatoslav\Desktop\datasets\source_erp\loc_a101.csv'
+        FROM 'C:\Users\Svyatoslav\Desktop\sql-data-warehouse-project\datasets\source_erp\loc_a101.csv'
         WITH (
-            FIRSTROW = 2,            
-            FIELDTERMINATOR = ',',   
-            TABLOCK                  
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
         );
         SET @end_time = GETDATE();
         PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
         PRINT '>> -------------';
 
-        -- erp_cust_az12 table load
+        -- Load erp_cust_az12 table
         SET @start_time = GETDATE();
         PRINT '>> Truncating Table: bronze.erp_cust_az12';
-        TRUNCATE TABLE bronze.erp_cust_az12;
+        TRUNCATE TABLE bronze.erp_cust_az12;             -- Remove existing data
         PRINT '>> Inserting Data Into: bronze.erp_cust_az12';
         BULK INSERT bronze.erp_cust_az12
-        FROM 'C:\Users\Svyatoslav\Desktop\datasets\source_erp\cust_az12.csv'
+        FROM 'C:\Users\Svyatoslav\Desktop\sql-data-warehouse-project\datasets\source_erp\cust_az12.csv'
         WITH (
-            FIRSTROW = 2,            
-            FIELDTERMINATOR = ',',   
-            TABLOCK                  
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
         );
         SET @end_time = GETDATE();
         PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
         PRINT '>> -------------';
 
-        -- erp_px_cat_g1v2 table load
+        -- Load erp_px_cat_g1v2 table
         SET @start_time = GETDATE();
         PRINT '>> Truncating Table: bronze.erp_px_cat_g1v2';
-        TRUNCATE TABLE bronze.erp_px_cat_g1v2;
+        TRUNCATE TABLE bronze.erp_px_cat_g1v2;           -- Remove existing data
         PRINT '>> Inserting Data Into: bronze.erp_px_cat_g1v2';
         BULK INSERT bronze.erp_px_cat_g1v2
-        FROM 'C:\Users\Svyatoslav\Desktop\datasets\source_erp\px_cat_g1v2.csv'
+        FROM 'C:\Users\Svyatoslav\Desktop\sql-data-warehouse-project\datasets\source_erp\px_cat_g1v2.csv'
         WITH (
-            FIRSTROW = 2,            
-            FIELDTERMINATOR = ',',   
-            TABLOCK                  
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
         );
         SET @end_time = GETDATE();
         PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
         PRINT '>> -------------';
 
-        -- End batch timer
+        -- ======================================================
+        -- Batch End
+        -- ======================================================
         SET @batch_end_time = GETDATE();
         PRINT '==========================================';
         PRINT 'Loading Bronze Layer is Completed';
@@ -160,9 +166,9 @@ BEGIN
         -- Catch and display errors
         PRINT '==========================================';
         PRINT 'ERROR OCCURRED DURING LOADING BRONZE LAYER';
-        PRINT 'Error Message: ' + ERROR_MESSAGE();     -- Error description
-        PRINT 'Error Number: ' + CAST(ERROR_NUMBER() AS NVARCHAR); -- Error code
-        PRINT 'Error State: ' + CAST(ERROR_STATE() AS NVARCHAR);   -- Error state
+        PRINT 'Error Message: ' + ERROR_MESSAGE();           -- Description of error
+        PRINT 'Error Number: ' + CAST(ERROR_NUMBER() AS NVARCHAR); -- SQL error code
+        PRINT 'Error State: ' + CAST(ERROR_STATE() AS NVARCHAR);   -- SQL error state
         PRINT '==========================================';
     END CATCH
 END
