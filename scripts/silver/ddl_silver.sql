@@ -45,7 +45,7 @@ IF OBJECT_ID('silver.crm_sales_details', 'U') IS NOT NULL
 
 CREATE TABLE silver.crm_sales_details (
     sls_ord_num NVARCHAR(50),    -- Sales Order Number
-    sls_prod_key NVARCHAR(50),   -- Product Key
+    sls_prd_key NVARCHAR(50),   -- Product Key
     sls_cust_id INT,             -- Customer ID
     sls_order_dt INT,            -- Order Date (in YYYYMMDD format)
     sls_ship_dt INT,             -- Ship Date
